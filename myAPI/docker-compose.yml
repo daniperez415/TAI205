@@ -1,0 +1,9 @@
+#Aqui se pueden orquesar uno o mas contenedores, fastapi, la bd etc
+services:
+  api:
+    build: .
+    container_name: server_FastAPI
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app/app

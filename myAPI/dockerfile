@@ -1,0 +1,22 @@
+#importamos la imagen base de python
+FROM python:3.12-slim
+
+#Crear carpeta de trabajo
+WORKDIR /app
+
+#Copia de requerimientos para que tenga dependencias propias, y en el contenedor pasa el archivo con el mismo nombre
+COPY requirements.txt .
+
+#Instalar requerimientos dentro del contenedor, y no guardar nada en cache 
+RUN pip install --no-cache-dir -r requirements.txt
+
+#Copiar archivo API, copiar y agregar esta imgen a main.py
+COPY ./app ./app
+
+#Exponer puerto
+EXPOSE 5000
+
+#Comando para ejecutar FastAPI
+CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","5000","--reload"]
+
+
