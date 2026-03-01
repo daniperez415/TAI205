@@ -3,6 +3,8 @@
 from fastapi import FastAPI, status, HTTPException
 from typing import Optional
 import asyncio
+#agregamos BaseModel pydantic
+from pydantic import BaseModel, Field
 
 #2.Inicialización APP
 app= FastAPI(title= 'Mi primer API',
@@ -15,6 +17,13 @@ usuarios=[
     {"id":"2", "nombre":"Yesenia", "edad":"23"},
     {"id":"3", "nombre":"Julian", "edad":"20"}
 ]
+
+#Modelo de validacion pydantic
+class crear_usuario(BaseModel):
+    id:int = Field(...,gt=0, description="Identificador de usuario")
+    nombre:str = Field(..., min_length=3,max_length=50,example="Juanita")
+    edad:int = Field(..., ge=1,le=123,description="Edad valida entre 1 y 123")
+
 
 #3.Endpoints
 
@@ -61,13 +70,22 @@ async def consulta():
     return { "status":"200", "total":len(usuarios), "data":usuarios } 
 
 
-@app.post("/v1/usuarios", tags=['CRUD HTTP']) 
-async def crea_usuario(usuario: dict):
+
+@app.post("/v1/usuarios/", tags=['CRUD_HTTP'], status_code=status.HTTP_201_CREATED)
+#usamos el modelo
+async def crear_usuario(usuario:crear_usuario):
     for usr in usuarios:
-        if usr["id"] == usuario.get["id"]:
-            raise HTTPException(status_code=400, detail="El id ya existe")
+        if usr["id"] == usuario.id:
+            raise HTTPException(
+                status_code=400,
+                detail=" El id ya existe"
+            )
     usuarios.append(usuario)
-    return { "mensaje":"Usuario agregado correctamente", "status": "200", "usuario": usuario} 
+    return{
+        "mensaje":"usuario agregado",
+        "usuario":usuario
+    }
+
 
 @app.put("/v1/usuarios/{id}", tags=['CRUD HTTP'])
 async def actualizar_usuario(id: int, usuario: dict):
@@ -81,6 +99,6 @@ async def actualizar_usuario(id: int, usuario: dict):
 async def eliminar_usuario(id: int):
     for index, usr in enumerate(usuarios):
         if usr["id"] == id:
-            raise HTTPException(status_code=400, detail="el id ya existe")
+            raise HTTPException(status_code=400, detail="El id ya existe")
     usuario_eliminado = usuarios.pop(index) #elimina el usuario de la lista
     return { "mensaje":"Usuario eliminado correctamente", "status": "200", "usuario": usuario_eliminado}
