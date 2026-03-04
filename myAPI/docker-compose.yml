@@ -10,10 +10,9 @@ services:
 
 server_FastAPI:
     build: .
-    container_name: server_FastAPI
+    container_name: server_FastAPI2
     ports:
       - "5010:5010"
     volumes:
       - ./app:/app/app
 
-  
