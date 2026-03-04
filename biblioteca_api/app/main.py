@@ -80,7 +80,7 @@ def devolver_libro(nombre_libro: str):
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="Libro no encontrado")
 
-# Eliminar el registro de un préstamo@app.delete("/prestamos/{nombre_libro}", status_code=status.HTTP_200_OK)
+# Eliminar el registro
 def eliminar_prestamo(nombre_libro: str):
     for libro in libros:
         if libro["nombre"].lower() == nombre_libro.lower():
@@ -95,3 +95,4 @@ def eliminar_prestamo(nombre_libro: str):
     raise HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="Libro no encontrado")
+
