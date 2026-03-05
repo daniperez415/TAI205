@@ -111,11 +111,11 @@ async def actualizar_usuario(id: int, usuario: dict):
     for index, usr in enumerate(usuarios):
         if usr["id"] == usuario["id"]:
             return { "mensaje":"Usuario actualizado correctamente", "status": "200", "usuario": usuario}
+        usuarios[index] = usuario
     raise HTTPException(
         status_code=400, 
         detail="el usuario no se encontró")
-        
-    usuarios[index] = usuario
+  
     
 
 @app.delete("/v1/usuarios/{id}", tags=['CRUD HTTP'], status_code=status.HTTP_200_OK)
