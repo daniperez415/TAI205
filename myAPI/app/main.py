@@ -1,10 +1,14 @@
 
 #1. Importaciones 
-from fastapi import FastAPI, status, HTTPException
+from fastapi import FastAPI, status, HTTPException, Depends
 from typing import Optional
 import asyncio
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+import secrets
+
 #agregamos BaseModel pydantic
 from pydantic import BaseModel, Field
+
 
 #2.Inicialización APP
 app= FastAPI(title= 'Mi primer API',
@@ -13,9 +17,10 @@ app= FastAPI(title= 'Mi primer API',
 
 #BD Ficticia
 usuarios=[
-    {"id":"1", "nombre":"Fernanda", "edad":"20"},
-    {"id":"2", "nombre":"Yesenia", "edad":"23"},
-    {"id":"3", "nombre":"Julian", "edad":"20"}
+    {"id":1, "nombre":"Fernanda", "edad":20},
+    {"id":2, "nombre":"Yesenia", "edad":23},
+    {"id":3, "nombre":"Julian", "edad":20}
+
 ]
 
 #Modelo de validacion pydantic
@@ -24,6 +29,20 @@ class crear_usuario(BaseModel):
     nombre:str = Field(..., min_length=3,max_length=50,example="Juanita")
     edad:int = Field(..., ge=1,le=123,description="Edad valida entre 1 y 123")
 
+
+#Seguridad HTTP BASIC
+seguridad= HTTPBasic()
+def verificar_peticion(credenciales: HTTPBasicCredentials=Depends(seguridad)):
+    #el primero es el usuario que se ingresa y el segundo es el usuario que se espera con las credenciales aunque no es una buena practica
+    userAuth= secrets.compare_digest(credenciales.username, "fernanda")
+    passwordAuth= secrets.compare_digest(credenciales.password, "123456")
+    if not (userAuth and passwordAuth):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciales no Autorizadas"
+        )
+    #regrsa el usuario con sus credenciales
+    return credenciales.username
 
 #3.Endpoints
 
@@ -91,14 +110,22 @@ async def crear_usuario(usuario:crear_usuario):
 async def actualizar_usuario(id: int, usuario: dict):
     for index, usr in enumerate(usuarios):
         if usr["id"] == usuario["id"]:
-            raise HTTPException(status_code=400, detail="el usuario no se encontró")
+            return { "mensaje":"Usuario actualizado correctamente", "status": "200", "usuario": usuario}
+    raise HTTPException(
+        status_code=400, 
+        detail="el usuario no se encontró")
+        
     usuarios[index] = usuario
-    return { "mensaje":"Usuario actualizado correctamente", "status": "200", "usuario": usuario}
+    
 
-@app.delete("/v1/usuarios/{id}", tags=['CRUD HTTP'])
-async def eliminar_usuario(id: int):
+@app.delete("/v1/usuarios/{id}", tags=['CRUD HTTP'], status_code=status.HTTP_200_OK)
+async def eliminar_usuario(id: int, userAuth:str=Depends(verificar_peticion)):
     for index, usr in enumerate(usuarios):
         if usr["id"] == id:
-            raise HTTPException(status_code=400, detail="El id ya existe")
-    usuario_eliminado = usuarios.pop(index) #elimina el usuario de la lista
-    return { "mensaje":"Usuario eliminado correctamente", "status": "200", "usuario": usuario_eliminado}
+            usuarios.pop(index) #elimina el usuario de la lista
+            return { 
+                "mensaje": f"Usuario eliminado por {userAuth}"}
+    raise HTTPException(
+        status_code=400, 
+        detail="El id ya existe")
+  
