@@ -14,9 +14,25 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY ./app ./app
 
 #Exponer puerto
-EXPOSE 5000
+EXPOSE 5010
 
 #Comando para ejecutar FastAPI
-CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","5000","--reload"]
+CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","5010","--reload"]
 
+#cd
+#. Crear entorno virtual
+python -m venv venv
 
+#. Activar entorno
+venv\Scripts\activate
+
+#Instalar FastAPI y Uvicorn
+pip install fastapi uvicorn
+
+#Crear archivo main.py con la API
+
+#Ejecutar servidor
+uvicorn main:app --reload
+
+# Abrir en navegador
+http://127.0.0.1:8000/docs

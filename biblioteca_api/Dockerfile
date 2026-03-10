@@ -18,3 +18,7 @@ EXPOSE 5020
 
 #Comando para ejecutar FastAPI
 CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","5020","--reload"]
+
+# docker Entrar a la carpeta:cd name
+#Construir contenedor:docker compose build
+# Ejecutar contenedor:docker compose up

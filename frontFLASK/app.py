@@ -10,20 +10,22 @@ API_URL = "http://localhost:5000/v1/usuarios"
 def index():
     response = requests.get(API_URL)
     data = response.json()
-    usuarios = data.get("data", [])
-    return render_template("index.html", usuarios=data["data"])
+    usuarios = data.get("usuarios", [])
+    return render_template("index.html", usuarios=usuarios)
 
 #crear usuarios
-@app.route("/agregar", methods=["POST"])
-def agregar_usuario():
-    id = request.form["id"]
-    nombre = request.form["nombre"]
-    edad = request.form["edad"]
+@app.route("/crear", methods=["POST"])
+def crear_usuario():
+    nuevo_usuario = {"id":int(request.form["id"]), "nombre":request.form["nombre"], "edad": int(request.form["edad"])}
+
+    requests.post(API_URL,json=nuevo_usuario)
     return redirect("/")
+   
 
 #elimina
-def eliminar_usuario():
-    id = request.form["id"]
+@app.route("/eliminar/<int:id>")
+def eliminar_usuario(id):
+    request.delete(API_URL+str(id))
     return redirect("/")
 
 if __name__ == "__main__":

@@ -1,16 +1,18 @@
 
-#1. Importaciones 
+#1. Importaciones, crea el servidor api, codigos http definidos, errores controlados, dependencias
 from fastapi import FastAPI, status, HTTPException, Depends
+#parametros opcionales, codigo asincrono, seguridad HTTP BASIC autenticacion
 from typing import Optional
 import asyncio
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+#contraseñas seguras
 import secrets
 
 #agregamos BaseModel pydantic
 from pydantic import BaseModel, Field
 
 
-#2.Inicialización APP
+#2.Inicialización API crea
 app= FastAPI(title= 'Mi primer API',
              description= "Fernanda Daniela Perez",
              version= '1.0.0')
@@ -41,8 +43,10 @@ def verificar_peticion(credenciales: HTTPBasicCredentials=Depends(seguridad)):
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales no Autorizadas"
         )
-    #regrsa el usuario con sus credenciales
+    #si no regrresa al usuario con sus credenciales correctas
     return credenciales.username
+
+
 
 #3.Endpoints
 
@@ -50,7 +54,7 @@ def verificar_peticion(credenciales: HTTPBasicCredentials=Depends(seguridad)):
 async def holaMundo():
     return { "mensaje":"Hola Mundo FASTAPI" } #objeto JSON izquierdo es una llave y el lado derecho es el valor
 
-#se abre la terminal y primero se verifica donde estamos 
+#crea entorno y se abre la terminal y primero se verifica donde estamos
 #cd miAPI
 #COMANDO PARA EJECUTAR EL SERVIDOR
 #uvicorn main:app --reload
@@ -117,7 +121,7 @@ async def actualizar_usuario(id: int, usuario: dict):
         detail="el usuario no se encontró")
   
     
-
+#eliminar
 @app.delete("/v1/usuarios/{id}", tags=['CRUD HTTP'], status_code=status.HTTP_200_OK)
 async def eliminar_usuario(id: int, userAuth:str=Depends(verificar_peticion)):
     for index, usr in enumerate(usuarios):
