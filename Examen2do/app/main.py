@@ -49,8 +49,6 @@ async def crear_reserva(id: int, userAuth:str=Depends(verificar_peticion)):
         status_code=400, 
         detail="el huesped no se encontró")
 
-
-
 #listar reservas que la fecha de entrada no sea menor a la actual, y la fecha de salida mayor fecha de entrada
 @app.post("/reservas", status_code=status.HTTP_201_CREATED)
 def registrar_reserva(reserva: Reserva):
