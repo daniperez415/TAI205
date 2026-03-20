@@ -34,7 +34,7 @@ async def crear_usuario(usuario:crear_usuario):
     }
 
 
-routerU.put("/{id}", status_code=status.HTTP_200_OK)
+routerU.put("/{id}")
 async def actualizar_usuario(id: int, usuario: dict):
     for index, usr in enumerate(usuarios):
         if usr["id"] == usuario["id"]:

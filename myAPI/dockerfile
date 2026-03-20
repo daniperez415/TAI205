@@ -7,7 +7,7 @@ WORKDIR /app
 #Copia de requerimientos para que tenga dependencias propias, y en el contenedor pasa el archivo con el mismo nombre
 COPY requirements.txt .
 
-#Instalar requerimientos dentro del contenedor, y no guardar nada en cache 
+#Instalar requerimientos dentro del contenedor, y no guardar nada en cache V
 RUN pip install --no-cache-dir -r requirements.txt
 
 #Copiar archivo API, copiar y agregar esta imgen a main.py
@@ -18,21 +18,3 @@ EXPOSE 5010
 
 #Comando para ejecutar FastAPI
 CMD ["uvicorn","app.main:app","--host","0.0.0.0","--port","5010","--reload"]
-
-#cd
-#. Crear entorno virtual
-python -m venv venv
-
-#. Activar entorno
-venv\Scripts\activate
-
-#Instalar FastAPI y Uvicorn
-pip install fastapi uvicorn
-
-#Crear archivo main.py con la API
-
-#Ejecutar servidor
-uvicorn main:app --reload
-
-# Abrir en navegador
-http://127.0.0.1:8000/docs
