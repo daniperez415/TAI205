@@ -17,7 +17,7 @@ async def consulta():
     } 
 
 
-routerU.post("/", status_code=status.HTTP_201_CREATED)
+@routerU.post("/", status_code=status.HTTP_201_CREATED)
 #usamos el modelo
 async def crear_usuario(usuario:crear_usuario):
     for usr in usuarios:
@@ -34,7 +34,7 @@ async def crear_usuario(usuario:crear_usuario):
     }
 
 
-routerU.put("/{id}")
+@routerU.put("/{id}")
 async def actualizar_usuario(id: int, usuario: dict):
     for index, usr in enumerate(usuarios):
         if usr["id"] == usuario["id"]:
@@ -47,7 +47,7 @@ async def actualizar_usuario(id: int, usuario: dict):
   
     
 #eliminar
-routerU.delete("/{id}", status_code=status.HTTP_200_OK)
+@routerU.delete("/{id}", status_code=status.HTTP_200_OK)
 async def eliminar_usuario(id: int, userAuth:str=Depends(verificar_peticion)):
     for index, usr in enumerate(usuarios):
         if usr["id"] == id:
